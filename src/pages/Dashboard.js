@@ -13,7 +13,6 @@ import {
   FiCheckSquare,
   FiUsers,
   FiClock,
-  FiTrendingUp,
   FiTarget,
   FiActivity,
   FiCalendar

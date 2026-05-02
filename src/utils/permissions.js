@@ -384,7 +384,7 @@ export const getAccessibleNavigationItems = (user, navigationItems) => {
   return navigationItems.filter(item => canAccessNavigation(user, item.name));
 };
 
-export default {
+const permissions = {
   ROLES,
   PERMISSIONS,
   hasPermission,
@@ -413,4 +413,7 @@ export default {
   getProjectsEndpoint,
   getTasksEndpoint,
   getAccessibleNavigationItems
-}; 
+};
+
+export default permissions;
+ 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -7,8 +7,7 @@ import {
   canCreateRole,
   canUpdateRole,
   canDeleteRole,
-  canAssignRoles,
-  PERMISSIONS
+  canAssignRoles
 } from '../utils/permissions';
 import {
   FiPlus,
@@ -37,7 +36,6 @@ const Roles = () => {
   const [showUserAssignModal, setShowUserAssignModal] = useState(false);
   const [modalMode, setModalMode] = useState('create'); // create, edit, view
   const [selectedRole, setSelectedRole] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     hasUsers: ''
@@ -54,6 +52,11 @@ const Roles = () => {
   // Available permissions grouped by category
   const availablePermissions = RoleUtils.getPermissionCategories();
 
+  const filterRoles = useCallback(() => {
+    const filtered = RoleUtils.filterRoles(roles, filters);
+    setFilteredRoles(filtered);
+  }, [roles, filters]);
+
   useEffect(() => {
     if (canManageRoles(user)) {
       fetchRoles();
@@ -63,7 +66,7 @@ const Roles = () => {
 
   useEffect(() => {
     filterRoles();
-  }, [roles, filters]);
+  }, [filterRoles]);
 
   const fetchRoles = async () => {
     try {
@@ -98,11 +101,6 @@ const Roles = () => {
     } catch (error) {
       console.error('Error fetching users:', error);
     }
-  };
-
-  const filterRoles = () => {
-    const filtered = RoleUtils.filterRoles(roles, filters);
-    setFilteredRoles(filtered);
   };
 
   const handleSubmit = async (e) => {
@@ -241,11 +239,6 @@ const Roles = () => {
     }
     
     setShowModal(true);
-  };
-
-  const openUserAssignModal = (user) => {
-    setSelectedUser(user);
-    setShowUserAssignModal(true);
   };
 
   const resetForm = () => {

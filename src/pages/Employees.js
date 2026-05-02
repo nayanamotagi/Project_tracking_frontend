@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -64,17 +64,42 @@ const Employees = () => {
     }
   });
 
+  const filterEmployees = useCallback(() => {
+    let filtered = employees;
+
+    if (filters.department) {
+      filtered = filtered.filter(emp => 
+        emp.department?.toLowerCase().includes(filters.department.toLowerCase())
+      );
+    }
+
+    if (filters.status) {
+      const isActive = filters.status === 'active';
+      filtered = filtered.filter(emp => emp.isActive === isActive);
+    }
+
+    if (filters.search) {
+      filtered = filtered.filter(emp => 
+        emp.user?.name?.toLowerCase().includes(filters.search.toLowerCase()) ||
+        emp.employeeId?.toLowerCase().includes(filters.search.toLowerCase()) ||
+        emp.department?.toLowerCase().includes(filters.search.toLowerCase()) ||
+        emp.position?.toLowerCase().includes(filters.search.toLowerCase())
+      );
+    }
+
+    setFilteredEmployees(filtered);
+  }, [employees, filters]);
+
   useEffect(() => {
     fetchEmployees();
     if (user?.role === 'admin') {
       fetchUsers();
     }
-  }, []);
+  }, [user?.role]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     filterEmployees();
-  }, [employees, filters]);
+  }, [filterEmployees]);
 
   const fetchUsers = async () => {
     try {
@@ -101,32 +126,6 @@ const Employees = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const filterEmployees = () => {
-    let filtered = employees;
-
-    if (filters.department) {
-      filtered = filtered.filter(emp => 
-        emp.department?.toLowerCase().includes(filters.department.toLowerCase())
-      );
-    }
-
-    if (filters.status) {
-      const isActive = filters.status === 'active';
-      filtered = filtered.filter(emp => emp.isActive === isActive);
-    }
-
-    if (filters.search) {
-      filtered = filtered.filter(emp => 
-        emp.user?.name?.toLowerCase().includes(filters.search.toLowerCase()) ||
-        emp.employeeId?.toLowerCase().includes(filters.search.toLowerCase()) ||
-        emp.department?.toLowerCase().includes(filters.search.toLowerCase()) ||
-        emp.position?.toLowerCase().includes(filters.search.toLowerCase())
-      );
-    }
-
-    setFilteredEmployees(filtered);
   };
 
   const handleSubmit = async (e) => {
