@@ -5,6 +5,8 @@ export const getApiBaseUrl = () => {
   return API_BASE_URL;
 };
 
-export default {
+const apiConfig = {
   API_BASE_URL
 };
+
+export default apiConfig;
