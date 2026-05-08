@@ -108,7 +108,7 @@ class RoleService {
       // In a real app, this would be: const response = await axios.get('/api/roles');
       // For now, return mock data combined with custom roles
       const allRoles = [...this.mockRoles, ...this.customRoles];
-      
+
       return {
         data: {
           data: allRoles,
@@ -128,7 +128,7 @@ class RoleService {
     try {
       const allRoles = [...this.mockRoles, ...this.customRoles];
       const role = allRoles.find(r => r._id === roleId);
-      
+
       if (!role) {
         throw new Error('Role not found');
       }
@@ -151,7 +151,7 @@ class RoleService {
   async createRole(roleData) {
     try {
       // In a real app, this would be: const response = await axios.post('/api/roles', roleData);
-      
+
       // Validate role data
       if (!roleData.name || !roleData.displayName || !roleData.description) {
         throw new Error('Missing required fields');
@@ -160,7 +160,7 @@ class RoleService {
       // Check if role name already exists
       const allRoles = [...this.mockRoles, ...this.customRoles];
       const existingRole = allRoles.find(r => r.name === roleData.name.toLowerCase().replace(/\s+/g, '_'));
-      
+
       if (existingRole) {
         throw new Error('Role with this name already exists');
       }
@@ -198,9 +198,9 @@ class RoleService {
   async updateRole(roleId, roleData) {
     try {
       // In a real app, this would be: const response = await axios.put(`/api/roles/${roleId}`, roleData);
-      
+
       const roleIndex = this.customRoles.findIndex(r => r._id === roleId);
-      
+
       if (roleIndex === -1) {
         // Check if it's a system role
         const systemRole = this.mockRoles.find(r => r._id === roleId);
@@ -239,9 +239,9 @@ class RoleService {
   async deleteRole(roleId) {
     try {
       // In a real app, this would be: const response = await axios.delete(`/api/roles/${roleId}`);
-      
+
       const roleIndex = this.customRoles.findIndex(r => r._id === roleId);
-      
+
       if (roleIndex === -1) {
         // Check if it's a system role
         const systemRole = this.mockRoles.find(r => r._id === roleId);
@@ -252,7 +252,7 @@ class RoleService {
       }
 
       const role = this.customRoles[roleIndex];
-      
+
       if (role.userCount > 0) {
         throw new Error('Cannot delete role that is assigned to users');
       }
@@ -278,7 +278,7 @@ class RoleService {
   async assignRoleToUser(userId, roleName) {
     try {
       // In a real app, this would be: const response = await axios.put(`/api/users/${userId}/role`, { role: roleName });
-      
+
       // For mock implementation, just return success
       return {
         data: {
@@ -383,7 +383,7 @@ class RoleService {
 
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase();
-      filtered = filtered.filter(role => 
+      filtered = filtered.filter(role =>
         role.displayName.toLowerCase().includes(searchTerm) ||
         role.description.toLowerCase().includes(searchTerm) ||
         role.name.toLowerCase().includes(searchTerm)
